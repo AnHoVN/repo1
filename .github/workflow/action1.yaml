@@ -1,1 +1,16 @@
-#call action 2
+name: Workflow A
+
+on:
+  workflow_dispatch:
+
+jobs:
+  call-repo-b:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger workflow in repo B
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: token ${{ secrets.REPO_B_TOKEN }}" \
+            https://api.github.com/repos/OWNER/repoB/dispatches \
+            -d '{"event_type":"run-workflow-b","client_payload":{"customData":"Hello from repoA"}}'
