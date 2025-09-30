@@ -6,7 +6,8 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-
+permissions:
+  statuses: write   # allow commit statuses
 jobs:
   call-repo-b:
     runs-on: ubuntu-latest
