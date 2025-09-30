@@ -47,7 +47,7 @@ jobs:
               owner,
               repo,
               sha,
-              state: "success",
+              state: "failure",
               context: "custom-check",
               description: "Job completed successfully",
               target_url: "https://github.com/${owner}/${repo}/actions/runs/${context.runId}"
