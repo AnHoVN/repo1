@@ -28,6 +28,8 @@ jobs:
               description: "Job has started",
               target_url: "https://github.com/${owner}/${repo}/actions/runs/${context.runId}"
             })
+      - name: Wait for 30 seconds
+        run: sleep 30
       - name: Trigger workflow in repo B
         run: |
           curl -X POST \
