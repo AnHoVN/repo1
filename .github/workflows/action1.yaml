@@ -11,6 +11,22 @@ jobs:
   call-repo-b:
     runs-on: ubuntu-latest
     steps:
+      - name: Set status to pending
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const sha = context.sha
+
+            await github.request("POST /repos/{owner}/{repo}/statuses/{sha}", {
+              owner,
+              repo,
+              sha,
+              state: "pending", // "pending", "success", "failure", "error"
+              context: "custom-check",
+              description: "Job has started",
+              target_url: "https://github.com/${owner}/${repo}/actions/runs/${context.runId}"
+            })
       - name: Trigger workflow in repo B
         run: |
           curl -X POST \
@@ -19,3 +35,19 @@ jobs:
             https://api.github.com/repos/AnHoVN/repo2/dispatches \
             -d '{"event_type":"run-workflow-b"}'
             # -d '{"event_type":"run-workflow-b","client_payload":{"customData":"Hello from repoA"}}'
+      - name: Set status to success
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { owner, repo } = context.repo
+            const sha = context.sha
+
+            await github.request("POST /repos/{owner}/{repo}/statuses/{sha}", {
+              owner,
+              repo,
+              sha,
+              state: "success",
+              context: "custom-check",
+              description: "Job completed successfully",
+              target_url: "https://github.com/${owner}/${repo}/actions/runs/${context.runId}"
+            })
