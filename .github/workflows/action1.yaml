@@ -37,22 +37,22 @@ jobs:
             https://api.github.com/repos/AnHoVN/repo2/dispatches \
             -d '{"event_type":"run-workflow-b"}'
 
-      - name: Post failure status and fail job
-        uses: actions/github-script@v7
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo } = context.repo
-            const sha = context.sha
+      # - name: Post failure status and fail job
+      #   uses: actions/github-script@v7
+      #   with:
+      #     github-token: ${{ secrets.GITHUB_TOKEN }}
+      #     script: |
+      #       const { owner, repo } = context.repo
+      #       const sha = context.sha
 
-            // update commit status
-            await github.request("POST /repos/{owner}/{repo}/statuses/{sha}", {
-              owner, repo, sha,
-              state: "failure",
-              context: "custom-check",
-              description: "Job failed",
-              target_url: `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`
-            })
+      #       // update commit status
+      #       await github.request("POST /repos/{owner}/{repo}/statuses/{sha}", {
+      #         owner, repo, sha,
+      #         state: "failure",
+      #         context: "custom-check",
+      #         description: "Job failed",
+      #         target_url: `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`
+      #       })
 
-            // then fail the step (this makes the job show as failed)
-            throw new Error('Marking job failed after posting commit status')
+      #       // then fail the step (this makes the job show as failed)
+      #       throw new Error('Marking job failed after posting commit status')
