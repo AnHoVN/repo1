@@ -36,19 +36,20 @@ jobs:
             https://api.github.com/repos/AnHoVN/repo2/dispatches \
             -d '{"event_type":"run-workflow-b"}'
             # -d '{"event_type":"run-workflow-b","client_payload":{"customData":"Hello from repoA"}}'
-      - name: Set status to success
+      - name: Set status to failure and fail the job
         uses: actions/github-script@v7
         with:
           script: |
             const { owner, repo } = context.repo
             const sha = context.sha
-
+            // post commit status = failure
             await github.request("POST /repos/{owner}/{repo}/statuses/{sha}", {
-              owner,
-              repo,
-              sha,
+              owner, repo, sha,
               state: "failure",
               context: "custom-check",
-              description: "Job completed successfully",
-              target_url: "https://github.com/${owner}/${repo}/actions/runs/${context.runId}"
+              description: "Job failed",
+              target_url: `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`
             })
+            // then fail the job
+            const core = require('@actions/core')
+            core.setFailed('Failing job after posting failure status')
