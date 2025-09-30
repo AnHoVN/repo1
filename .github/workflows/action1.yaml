@@ -18,18 +18,17 @@ jobs:
           script: |
             const { owner, repo } = context.repo
             const sha = context.sha
-
             await github.request("POST /repos/{owner}/{repo}/statuses/{sha}", {
-              owner,
-              repo,
-              sha,
-              state: "error", // "pending", "success", "failure", "error"
+              owner, repo, sha,
+              state: "pending",
               context: "custom-check",
               description: "Job has started",
-              target_url: "https://github.com/${owner}/${repo}/actions/runs/${context.runId}"
+              target_url: `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`
             })
+
       - name: Wait for 30 seconds
         run: sleep 30
+
       - name: Trigger workflow in repo B
         run: |
           curl -X POST \
@@ -37,16 +36,16 @@ jobs:
             -H "Authorization: token ${{ secrets.REPO_B_TOKEN }}" \
             https://api.github.com/repos/AnHoVN/repo2/dispatches \
             -d '{"event_type":"run-workflow-b"}'
-            # -d '{"event_type":"run-workflow-b","client_payload":{"customData":"Hello from repoA"}}'
 
-      - name: Post failure status and fail
+      - name: Post failure status and fail job
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { owner, repo } = context.repo
             const sha = context.sha
-      
+
+            // update commit status
             await github.request("POST /repos/{owner}/{repo}/statuses/{sha}", {
               owner, repo, sha,
               state: "failure",
@@ -54,3 +53,6 @@ jobs:
               description: "Job failed",
               target_url: `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`
             })
+
+            // then fail the step (this makes the job show as failed)
+            throw new Error('Marking job failed after posting commit status')
