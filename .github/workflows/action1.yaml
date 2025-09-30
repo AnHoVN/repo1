@@ -23,7 +23,7 @@ jobs:
               owner,
               repo,
               sha,
-              state: "pending", // "pending", "success", "failure", "error"
+              state: "error", // "pending", "success", "failure", "error"
               context: "custom-check",
               description: "Job has started",
               target_url: "https://github.com/${owner}/${repo}/actions/runs/${context.runId}"
