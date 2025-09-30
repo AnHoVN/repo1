@@ -20,14 +20,14 @@ jobs:
             const sha = context.sha
             await github.request("POST /repos/{owner}/{repo}/statuses/{sha}", {
               owner, repo, sha,
-              state: "pending",
+              state: "failure",
               context: "custom-check",
               description: "Job has started",
               target_url: `https://github.com/${owner}/${repo}/actions/runs/${context.runId}`
             })
 
-      - name: Wait for 30 seconds
-        run: sleep 30
+      - name: Wait for 10 seconds
+        run: sleep 10
 
       - name: Trigger workflow in repo B
         run: |
